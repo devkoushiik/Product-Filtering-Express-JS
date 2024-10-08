@@ -1,30 +1,22 @@
 require('dotenv').config();
-const express = require('express');
+require("express-async-errors");
+
+const express = require("express");
 const app = express();
 
-const connectDB = require('./db/connect')
+const connectDB = require("./db/connect");
 
-const errorHandlerMiddleWare = require('./middleware/error-handler');
-const notFound = require('./middleware/not-found');
-
-
+const errorHandlerMiddleWare = require("./middleware/error-handler");
+const notFound = require("./middleware/not-found");
+const productRouter = require("./routes/products");
 
 // middlewares
-app.use(express.static('./public'));
+app.use(express.static("./public"));
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json())
-
-
-
-app.get('/', (req,res)=>{
-    res.send('<h1>Store API</h1><a href="/products">Products</a>')
-})
-app.get('/products', (req,res)=>{
-    res.status(200).json({msg: 'no product'})
-})
+app.use(express.json());
 
 //product route
-
+app.use("/api/v1", productRouter);
 // custom middlewares
 app.use(errorHandlerMiddleWare);
 app.use(notFound);
